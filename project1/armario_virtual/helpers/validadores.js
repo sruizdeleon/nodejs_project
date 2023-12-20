@@ -1,95 +1,77 @@
+/* Validadores PUT */
 
-/* async function validarAtributosPrenda(body) {
-    let mensajeError = new Array;
-    if (body.marca === undefined || body.marca.trim() === "") {
-        mensajeError.push('marca')
-    }
-    if (body.categoria === undefined || body.categoria.trim() === "") {
-        mensajeError.push('categoria')
-    }
-    if (body.subcategoria === undefined || body.subcategoria.trim() === "") {
-        mensajeError.push('subcategoria')
-    }
-    if (body.talla === undefined || body.talla.trim() === "") {
-        mensajeError.push('talla')
-    }
-    if (body.color === undefined || body.color.trim() === "") {
-        mensajeError.push('color')
-    }
+async function validarAtributosPrendaCompleta(body) {
+    const atributosAModificar = new Object();
+    const atributosErroneos = new Array();
 
-    if (mensajeError.length === 0) {
-        if (mensajeError.length > 0) {
-            if (mensajeError.length > 1) {
-                return {
-                    valido: false,
-                    mensaje: `Error: falta introducir la siguiente información: ${mensajeError.join(', ')}.`
-                }
-            } else {
-                return {
-                    valido: false,
-                    mensaje: `Error: falta introducir la siguiente información: ${mensajeError[0]}.`
-                }
-            }
-        }
-    } else {
+    /* Validación si existen o vacíos */
+    body.marca ?
+        (body.marca.trim() !== "" ? true : (atributosErroneos.push("marca: vacía")))
+        : (atributosErroneos.push("marca: no existe o vacía"));
+    body.categoria ?
+        (body.categoria.trim() !== "" ? true : (atributosErroneos.push("categoria: vacía")))
+        : (atributosErroneos.push("categoria: no existe o vacía"));
+    body.subcategoria ?
+        (body.subcategoria.trim() !== "" ? true : (atributosErroneos.push("subcategoria: vacía")))
+        : (atributosErroneos.push("subcategoria: no existe o vacía"));
+    body.talla ?
+        (body.talla.trim() !== "" ? true : (atributosErroneos.push("talla: vacía")))
+        : (atributosErroneos.push("talla: no existe o vacía"));
+    body.color ?
+        (body.color.trim() !== "" ? true : (atributosErroneos.push("color: vacío")))
+        : (atributosErroneos.push("color: no existe o vacío"));
+
+    if (atributosErroneos.length > 0) {
         return {
             valido: false,
-            mensaje: null
+            msg: `Error: los siguientes atributos han resultado erróneos: ${atributosErroneos.join(", ")}.`
         }
-    }
-} */
-
-async function validarAtributosPrenda (body) {
-    if (body.categoria === undefined
-        || body.categoria.trim() === ""
-        || body.subcategoria === undefined
-        || body.subcategoria.trim() === ""
-        || body.talla === undefined
-        || body.talla.trim() === ""
-        || body.color === undefined
-        || body.color.trim() === ""
-        || body.marca === undefined
-        || body.marca.trim() === "") {
-            return {
-                valido: false,
-                mensaje: "Error: falta algún atributo"
-            }
     } else {
         return {
             valido: true,
-            mensaje: null
+            msg: null
         }
     }
 }
 
+async function validarAtributosUsuarioCompleto (body) {
+    const atributosAModificar = new Object();
+    const atributosErroneos = new Array();
 
-async function validarAtributosUsuario (body) {
-    if (body.nombre === undefined
-        || body.nombre.trim() === ""
-        || body.apellidos === undefined
-        || body.apellidos.trim() === ""
-        || body.email === undefined
-        || body.email.trim() === ""
-        || body.movil === undefined
-        || body.movil.trim() === ""
-        || body.genero === undefined
-        || body.genero.trim() === ""
-        || body.fechaNacimiento === undefined
-        || body.fechaNacimiento.trim() === "") {
-            return {
-                valido: false,
-                mensaje: "Error: falta algún atributo"
-            }
+/* Validación si existen o vacíos */
+    body.nombre ?
+        (body.nombre.trim() !== "" ? true : (atributosErroneos.push("nombre: vacío")))
+        : (atributosErroneos.push("nombre: no existe o vacío"));
+    body.apellidos ?
+        (body.apellidos.trim() !== "" ? true : (atributosErroneos.push("apellidos: vacío")))
+        : (atributosErroneos.push("apellidos: no existe o vacío"));
+    body.email ?
+        (body.email.trim() !== "" ? true : (atributosErroneos.push("email: vacío")))
+        : (atributosErroneos.push("email: no existe o vacío"));
+    body.genero ?
+        (body.genero.trim() !== "" ? true : (atributosErroneos.push("genero: vacío")))
+        : (atributosErroneos.push("genero: no existe o vacío"));
+    body.fechaNacimiento ?
+        (body.fechaNacimiento.trim() !== "" ? true : (atributosErroneos.push("fechaNacimiento: vacío")))
+        : (atributosErroneos.push("fechaNacimiento: no existe o vacío"));
+
+    if (atributosErroneos.length > 0) {
+        return {
+            valido: false,
+            msg: `Error: los siguientes atributos han resultado erróneos: ${atributosErroneos.join(", ")}.`
+        }
     } else {
         return {
             valido: true,
-            mensaje: null
+            msg: null
         }
     }
 }
+
+/* Validadores PATCH */
 
 
 module.exports = {
-    validarAtributosPrenda,
-    validarAtributosUsuario
+    validarAtributosPrendaCompleta,
+    validarAtributosUsuarioCompleto
 }

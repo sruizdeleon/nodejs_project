@@ -4,7 +4,7 @@ const router = express.Router()
 
 const { buscarTodos, buscarPorId, crearUsuario, eliminarUsuario, modificarUsuario } = require('../controllers/usuario.controller')
 
-const { validarAtributosUsuario } = require('../helpers/validadores')
+const { validarAtributosUsuarioCompleto } = require('../helpers/validadores')
 
 /* GET */
 router.get('/', async(req, res) =>{
@@ -77,9 +77,9 @@ router.delete('/:id', async (req, res) =>{
 router.put('/:id', async (req, res) => {
     try {
         let encontrado = null;
-        const resultadoValidacion = await validarAtributosUsuario(req.body)
-        if (!resultadoValidacion.valido) {
-            res.status(400).json({msg: resultadoValidacion.mensaje})
+        const resultadoValidacion = await validarAtributosUsuarioCompleto(req.body)
+        if (resultadoValidacion.valido === false) {
+            res.status(400).json({msg: resultadoValidacion.msg})
         } else {
             encontrado = await modificarUsuario(
                 req.params.id,

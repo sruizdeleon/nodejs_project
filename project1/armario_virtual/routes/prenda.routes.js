@@ -4,7 +4,7 @@ const router = express.Router()
 
 const { buscarTodos, buscarPorId, crearPrenda, eliminarPrenda, modificarPrenda } = require('../controllers/prenda.controller')
 
-const { validarAtributosPrenda } = require('../helpers/validadores')
+const { validarAtributosPrendaCompleta } = require('../helpers/validadores')
 
 /* GET */
 
@@ -79,9 +79,9 @@ router.delete('/:id', async (req, res) =>{
 router.put('/:id', async (req, res) => {
     try {
         let encontrado = null;
-        const resultadoValidacion = await validarAtributosPrenda(req.body)
-        if (!resultadoValidacion.valido) {
-            res.status(400).json({msg: resultadoValidacion.mensaje})
+        const resultadoValidacion = await validarAtributosPrendaCompleta(req.body)
+        if (resultadoValidacion.valido === false) {
+            res.status(400).json({msg: resultadoValidacion.msg})
         } else {
             encontrado = await modificarPrenda(
                 req.params.id,
@@ -101,8 +101,6 @@ router.put('/:id', async (req, res) => {
 
 
 /* PATCH */
-
-/* A falta de crear validación */
 
 /* router.patch('/:id', async (req, res) => {
     let encontrado = null;
