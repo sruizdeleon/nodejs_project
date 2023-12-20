@@ -2,9 +2,9 @@ const express = require('express')
 
 const router = express.Router()
 
-const { buscarTodos, buscarPorId, crearPrenda, eliminarPrenda, modificarPrenda } = require('../controllers/prenda.controller')
+const { buscarTodos, buscarPorId, crearPrenda, eliminarPrenda, modificarPrenda, modificarPrendaParcial } = require('../controllers/prenda.controller')
 
-const { validarAtributosPrendaCompleta } = require('../helpers/validadores')
+const { validarAtributosPrendaCompleta, validarAtributosPrendaParcial } = require('../helpers/validadores')
 
 /* GET */
 
@@ -92,7 +92,8 @@ router.put('/:id', async (req, res) => {
                 req.body.color.trim(),
             )
             const prendaActual = await buscarPorId(req.params.id)
-            res.json(encontrado === null ? {msg: "Error: prenda no encontrada"} : {datoAntiguo: encontrado, datoActual: prendaActual, msg: 'prenda actualizada correctamente'})
+            encontrado === null && res.status(404).json({msg: "Error: prenda no encontrada"})
+            encontrado !== null && res.json({datoAntiguo: encontrado, datoActual: prendaActual, msg: 'prenda actualizada correctamente'})
         }
     } catch (error) {
         res.status(500).json({msg: 'Error: fallo interno del servidor'})
@@ -102,18 +103,21 @@ router.put('/:id', async (req, res) => {
 
 /* PATCH */
 
-/* router.patch('/:id', async (req, res) => {
-    let encontrado = null;
-    encontrado = await modificarPrenda(
-        req.params.id,
-        req.body.categoria.trim(),
-        req.body.subcategoria.trim(),
-        req.body.marca.trim(),
-        req.body.talla.trim(),
-        req.body.color.trim(),
-    )
-    const prendaActual = await buscarPorId(req.params.id)
-    res.json(encontrado === null ? {msg: "Error: prenda no encontrada"} : {datoAntiguo: encontrado, datoActual: prendaActual, msg: 'prenda actualizada correctamente'})
-}) */
+router.patch('/:id', async (req, res) => {
+    try {
+        let encontrado = null;
+        let resultadoValidacion = await validarAtributosPrendaParcial(req.body)
+        if (resultadoValidacion.valido === false) {
+            res.status(400).json({msg: resultadoValidacion.msg})
+        } else {
+            encontrado = await modificarPrendaParcial(req.params.id, resultadoValidacion.atributos)
+            let prendaActual = await buscarPorId(req.params.id)
+            encontrado === null && res.status(404).json({msg: "Error: prenda no encontrada"})
+            encontrado !== null && res.json({datoAntiguo: encontrado, datoActual: prendaActual, msg: 'prenda actualizada correctamente'})
+        }
+    } catch (erro) {
+        res.status(500).json({msg: 'Error: fallo interno del servidor'})
+    }
+})
 
 module.exports = router

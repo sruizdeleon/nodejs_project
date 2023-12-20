@@ -70,8 +70,79 @@ async function validarAtributosUsuarioCompleto (body) {
 
 /* Validadores PATCH */
 
+async function validarAtributosPrendaParcial (body) {
+    const atributosAModificar = new Object();
+    const atributosErroneos = new Array();
+
+    /* Comprobación si existe y creación de propiedad */
+    body.marca !== undefined ? atributosAModificar.marca = body.marca.trim() : null;
+    body.categoria !== undefined ? atributosAModificar.categoria = body.categoria.trim() : null;
+    body.subcategoria !== undefined ? atributosAModificar.subcategoria = body.subcategoria.trim() : null;
+    body.talla !== undefined ? atributosAModificar.talla = body.talla.trim() : null;
+    body.color !== undefined ? atributosAModificar.color = body.color.trim() : null;
+
+    /* Comprobación si la propiedad está vacía o con espacios en blanco */
+    atributosAModificar.marca === "" ? atributosErroneos.push("marca") : null;
+    atributosAModificar.categoria === "" ? atributosErroneos.push("categoria") : null;
+    atributosAModificar.subcategoria === "" ? atributosErroneos.push("subcategoria") : null;
+    atributosAModificar.talla === "" ? atributosErroneos.push("talla") : null;
+    atributosAModificar.color === "" ? atributosErroneos.push("color") : null;
+
+    if (atributosErroneos.length > 0) {
+        return { // Si tiene espacios o vacía, pero venía la propiedad, pedimos que la rellenen.
+            valido: false,
+            msg: `Error: se han enviado los siguientes atributos vacíos o con espacios en blanco: ${atributosErroneos.join(", ")}.`
+        }
+    } else {
+        return { // Si las propiedades vienen correctamente rellenas se devuelve el objeto con las propiedades a modificar.
+            valido: true,
+            msg: null,
+            atributos: atributosAModificar
+        }
+    }
+}
+
+
+
+async function validarAtributosUsuarioParcial (body) {
+    const atributosAModificar = new Object();
+    const atributosErroneos = new Array();
+
+    /* Comprobación si existe y creación de propiedad */
+    body.nombre !== undefined ? atributosAModificar.nombre = body.nombre.trim() : null;
+    body.apellidos !== undefined ? atributosAModificar.apellidos = body.apellidos.trim() : null;
+    body.email !== undefined ? atributosAModificar.email = body.email.trim() : null;
+    body.movil !== undefined ? atributosAModificar.movil = body.movil.trim() : null;
+    body.genero !== undefined ? atributosAModificar.genero = body.genero.trim() : null;
+    body.fechaNacimiento !== undefined ? atributosAModificar.fechaNacimiento = body.fechaNacimiento.trim() : null;
+
+    /* Comprobación si la propiedad está vacía o con espacios en blanco */
+    atributosAModificar.nombre === "" ? atributosErroneos.push("nombre") : null;
+    atributosAModificar.apellidos === "" ? atributosErroneos.push("apellidos") : null;
+    atributosAModificar.email === "" ? atributosErroneos.push("email") : null;
+    atributosAModificar.movil === "" ? atributosErroneos.push("movil") : null;
+    atributosAModificar.genero === "" ? atributosErroneos.push("genero") : null;
+    atributosAModificar.fechaNacimiento === "" ? atributosErroneos.push("fecha de nacimiento") : null;
+
+    if (atributosErroneos.length > 0) {
+        return { // Si tiene espacios o vacía, pero venía la propiedad, pedimos que la rellenen.
+            valido: false,
+            msg: `Error: se han enviado los siguientes atributos vacíos o con espacios en blanco: ${atributosErroneos.join(", ")}.`
+        }
+    } else {
+        return { // Si las propiedades vienen correctamente rellenas se devuelve el objeto con las propiedades a modificar.
+            valido: true,
+            msg: null,
+            atributos: atributosAModificar
+        }
+    }
+}
+
+
 
 module.exports = {
     validarAtributosPrendaCompleta,
-    validarAtributosUsuarioCompleto
+    validarAtributosUsuarioCompleto,
+    validarAtributosPrendaParcial,
+    validarAtributosUsuarioParcial
 }

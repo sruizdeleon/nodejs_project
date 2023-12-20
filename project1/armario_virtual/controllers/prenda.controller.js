@@ -37,12 +37,17 @@ async function modificarPrenda(id, categoria, subcategoria, marca, talla, color)
     const prendaSinModificar = Prenda.findByIdAndUpdate (
     id,
     {
-        categoria: categoria,
-        subcategoria: subcategoria,
-        marca: marca,
-        talla: talla,
-        color: color
+        categoria,
+        subcategoria,
+        marca,
+        talla,
+        color
     })
+    return prendaSinModificar
+}
+
+async function modificarPrendaParcial(id, atributos) {
+    const prendaSinModificar = await Prenda.findByIdAndUpdate (id, atributos)
     return prendaSinModificar
 }
 
@@ -51,5 +56,6 @@ module.exports = {
     buscarPorId,
     crearPrenda,
     eliminarPrenda,
-    modificarPrenda
+    modificarPrenda,
+    modificarPrendaParcial
 }

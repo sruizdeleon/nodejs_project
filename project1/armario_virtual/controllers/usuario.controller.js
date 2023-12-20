@@ -48,10 +48,16 @@ async function modificarUsuario(id, nombre, apellidos, email, movil, fechaNacimi
     return usuarioSinModificar
 }
 
+async function modificarUsuarioParcial(id, atributos) {
+    const usuarioSinModificar = await Usuario.findByIdAndUpdate (id, atributos)
+    return usuarioSinModificar
+}
+
 module.exports = {
     buscarTodos,
     buscarPorId,
     crearUsuario,
     eliminarUsuario,
-    modificarUsuario
+    modificarUsuario,
+    modificarUsuarioParcial
 }
