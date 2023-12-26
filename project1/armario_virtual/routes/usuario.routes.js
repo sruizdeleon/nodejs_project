@@ -4,7 +4,7 @@ const router = express.Router()
 
 const { buscarTodos, buscarPorId, crearUsuario, eliminarUsuario, modificarUsuario, modificarUsuarioParcial } = require('../controllers/usuario.controller')
 
-const { validarAtributosUsuarioCompleto, validarAtributosUsuarioParcial } = require('../helpers/validadores')
+const { middlewareValidacionUsuarioParcial, middlewareValidacionUsuarioCompleto } = require('../middlewares/usuario.middleware')
 
 /* GET */
 router.get('/', async(req, res) =>{
@@ -36,11 +36,11 @@ router.get('/:id', async (req, res) =>{
 /* POST */
 router.post('/', async (req, res) =>{
     try {
-        const resultadoValidacion = await validarAtributosUsuario(req.body)
+        const resultadoValidacion = await validarAtributosUsuarioCompleto(req.body) // Validación de atributos en Helpers
         if (!resultadoValidacion.valido) {
             res.status(400).json({msg: resultadoValidacion.mensaje})
         } else {
-        const nuevoUsuario = await crearUsuario(
+        const nuevoUsuario = await crearUsuario( // Acceso y creación en BBDD por Controllers
             req.body.nombre.trim(),
             req.body.apellidos.trim(),
             req.body.email.trim(),
@@ -48,7 +48,6 @@ router.post('/', async (req, res) =>{
             req.body.fechaNacimiento.trim(),
             req.body.genero.trim(),
         );
-            /* Control de respuesta si todo correcto */
             res.json({dato: nuevoUsuario, msg: `Se ha creado el usuario correctamente`})
         }
     } catch (error) {
@@ -60,7 +59,7 @@ router.post('/', async (req, res) =>{
 /* DELETE */
 router.delete('/:id', async (req, res) =>{
     try {
-        const usuarioBorrado = await eliminarUsuario(req.params.id)
+        const usuarioBorrado = await eliminarUsuario(req.params.id) // Acceso y modificación de BBDD en Controllers
         if (usuarioBorrado) {
             res.json({dato: usuarioBorrado, msg: 'usuario borrado correctamente'})
         }
@@ -74,26 +73,21 @@ router.delete('/:id', async (req, res) =>{
 
 
 /* PUT */
-router.put('/:id', async (req, res) => {
+router.put('/:id', middlewareValidacionUsuarioCompleto, async (req, res) => {
     try {
         let encontrado = null;
-        const resultadoValidacion = await validarAtributosUsuarioCompleto(req.body)
-        if (resultadoValidacion.valido === false) {
-            res.status(400).json({msg: resultadoValidacion.msg})
-        } else {
-            encontrado = await modificarUsuario(
-                req.params.id,
-                req.body.nombre.trim(),
-                req.body.apellidos.trim(),
-                req.body.email.trim(),
-                req.body.movil.trim(),
-                req.body.fechaNacimiento.trim(),
-                req.body.genero.trim()
-            )
-            const usuarioActual = await buscarPorId(req.params.id)
-            encontrado === null && res.status(404).json({msg: "Error: usuario no encontrado"})
-            encontrado !== null && res.json({datoAntiguo: encontrado, datoActual: usuarioActual, msg: 'usuario actualizado correctamente'})
-        }
+        encontrado = await modificarUsuario(  // Acceso y modificación de BBDD en Controllers
+            req.params.id,
+            req.body.nombre.trim(),
+            req.body.apellidos.trim(),
+            req.body.email.trim(),
+            req.body.movil.trim(),
+            req.body.fechaNacimiento.trim(),
+            req.body.genero.trim()
+        )
+        const usuarioActual = await buscarPorId(req.params.id) // Búsqueda nuevo dato en BBDD por Controllers para devolver dato antiguo y actual.
+        encontrado === null && res.status(404).json({msg: "Error: usuario no encontrado"})
+        encontrado !== null && res.json({datoAntiguo: encontrado, datoActual: usuarioActual, msg: 'usuario actualizado correctamente'})
     } catch (error) {
         res.status(500).json({msg: 'Error: fallo interno del servidor'})
     }
@@ -102,18 +96,14 @@ router.put('/:id', async (req, res) => {
 
 /* PATCH */
 
-router.patch('/:id', async (req, res) => {
+router.patch('/:id', middlewareValidacionUsuarioParcial, async (req, res) => {
     try {
         let encontrado = null;
-        let resultadoValidacion = await validarAtributosUsuarioParcial(req.body)
-        if (resultadoValidacion.valido === false) {
-            res.status(400).json({msg: resultadoValidacion.msg})
-        } else {
-            encontrado = await modificarUsuarioParcial(req.params.id, resultadoValidacion.atributos)
-            let usuarioActual = await buscarPorId(req.params.id)
-            encontrado === null && res.json({msg: "Error: usuario no encontrado"})
-            encontrado !== null && res.json({datoAntiguo: encontrado, datoActual: usuarioActual, msg: 'usuario actualizado correctamente'})
-        }
+        encontrado = await modificarUsuarioParcial(req.params.id, resultadoValidacion.atributos) // Acceso y modificación de BBDD en Controllers
+        let usuarioActual = await buscarPorId(req.params.id) // Búsqueda nuevo dato en BBDD por Controllers para devolver dato antiguo y actual.
+        encontrado === null && res.json({msg: "Error: usuario no encontrado"})
+        encontrado !== null && res.json({datoAntiguo: encontrado, datoActual: usuarioActual, msg: 'usuario actualizado correctamente'})
+
     } catch (erro) {
         res.status(500).json({msg: 'Error: fallo interno del servidor'})
     }
