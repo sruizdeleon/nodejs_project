@@ -17,7 +17,7 @@ async function middlewareValidacionPrendaCompleto(req, res, next) {
 }
 
 async function middlewareValidacionPrendaParcial(req, res, next) {
-	// try {
+	try {
 		const objetoEncontrado = await buscarPorId(req.params.id);
 		const resultadoValidacion = await validarAtributosPrendaParcial(req.body, objetoEncontrado); // Validación de atributos en Helpers
 		if (resultadoValidacion.valido === false) {
@@ -25,9 +25,9 @@ async function middlewareValidacionPrendaParcial(req, res, next) {
 		} else {
 				next();
 		}
-	// } catch (error) {
-	// 	res.status(404).json({ msg: "Error: prenda no encontrada" });
-	// }
+	} catch (error) {
+		res.status(404).json({ msg: "Error: prenda no encontrada" });
+	}
 }
 
 module.exports = {

@@ -16,11 +16,15 @@ async function middlewareValidacionUsuarioCompleto(req, res, next) {
 }
 
 async function middlewareValidacionUsuarioParcial(req, res, next) {
-	const resultadoValidacion = await validarAtributosUsuarioParcial(req.body); // Validación de atributos en Helpers
-	if (resultadoValidacion.valido === false) {
-		res.status(400).json({ msg: resultadoValidacion.msg });
-	} else {
-		next();
+	try {
+		const resultadoValidacion = await validarAtributosUsuarioParcial(req.body); // Validación de atributos en Helpers
+		if (resultadoValidacion.valido === false) {
+			res.status(400).json({ msg: resultadoValidacion.msg });
+		} else {
+			next();
+		}
+	} catch (error) {
+		res.status(404).json({ msg: "Error: usuario no encontrado" });
 	}
 }
 

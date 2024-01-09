@@ -20,7 +20,7 @@ const {
 
 router.get("/", async (req, res) => {
 	try {
-		const prendas = await buscarTodos(); // Acceso y búsqueda en BBDD por Controllers
+		let prendas = await buscarTodos(); // Acceso y búsqueda en BBDD por Controllers
 		res.json(prendas);
 	} catch (error) {
 		res.status(500).json({ msg: "Error: fallo interno del servidor" });
@@ -29,7 +29,12 @@ router.get("/", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
 	try {
-		const objetoEncontrado = await buscarPorId(req.params.id); // Acceso y búsqueda en BBDD por Controllers
+		let objetoEncontrado = new Object();
+		try {
+			objetoEncontrado = await buscarPorId(req.params.id); // Acceso y búsqueda en BBDD por Controllers
+		} catch (error) {
+			res.status(500).json({ msg: "Error: fallo del servidor" });
+		}
 		if (objetoEncontrado) {
 			res.json(objetoEncontrado);
 		} else {
@@ -55,7 +60,12 @@ router.post("/", middlewareValidacionPrendaCompleto, async (req, res) => {
 
 router.delete("/:id", async (req, res) => {
 	try {
-		const prendaBorrada = await eliminarPrenda(req.params.id); // Acceso y modificación de BBDD en Controllers
+		let prendaBorrada = new Object();
+		try {
+			prendaBorrada = await eliminarPrenda(req.params.id); // Acceso y modificación de BBDD en Controllers
+		} catch (error) {
+			res.status(500).json({ msg: "Error: fallo del servidor" });
+		}
 		if (prendaBorrada) {
 			res.json({ dato: prendaBorrada, msg: "prenda borrada correctamente" });
 		} else {
@@ -70,16 +80,21 @@ router.delete("/:id", async (req, res) => {
 
 router.put("/:id", middlewareValidacionPrendaCompleto, async (req, res) => {
 	try {
-	let encontrado = null;
-	encontrado = await modificarPrenda(req.params.id, req.body); // Acceso y modificación de BBDD en Controllers
-	const prendaActual = await buscarPorId(req.params.id); // Búsqueda nuevo dato en BBDD por Controllers para devolver dato antiguo y actual.
-	encontrado === null && res.status(404).json({ msg: "Error: prenda no encontrada" });
-	encontrado !== null &&
-		res.json({
-			datoAntiguo: encontrado,
-			datoActual: prendaActual,
-			msg: "prenda actualizada correctamente",
-		});
+		let encontrado = new Object();
+		let prendaActual = new Object();
+		try {
+			encontrado = await modificarPrenda(req.params.id, req.body); // Acceso y modificación de BBDD en Controllers
+			prendaActual = await buscarPorId(req.params.id); // Búsqueda nuevo dato en BBDD por Controllers para devolver dato antiguo y actual.
+		} catch (error) {
+			res.status(500).json({ msg: "Error: fallo del servidor" });
+		}
+		encontrado === null && res.status(404).json({ msg: "Error: prenda no encontrada" });
+		encontrado !== null &&
+			res.json({
+				datoAntiguo: encontrado,
+				datoActual: prendaActual,
+				msg: "prenda actualizada correctamente",
+			});
 	} catch (error) {
 		res.status(500).json({ msg: "Error: fallo interno del servidor" });
 	}
@@ -89,19 +104,24 @@ router.put("/:id", middlewareValidacionPrendaCompleto, async (req, res) => {
 
 router.patch("/:id", middlewareValidacionPrendaParcial, async (req, res) => {
 	try {
-	let encontrado = null;
-	encontrado = await modificarPrendaParcial(req.params.id, req.body); // Acceso y modificación de BBDD en Controllers
-	let prendaActual = await buscarPorId(req.params.id); // Búsqueda nuevo dato en BBDD por Controllers para devolver dato antiguo y actual.
-	encontrado === null && res.status(404).json({ msg: "Error: prenda no encontrada" });
-	encontrado !== null &&
-		res.json({
-			datoAntiguo: encontrado,
-			datoActual: prendaActual,
-			msg: "prenda actualizada correctamente",
-		});
+		let encontrado = new Object;
+		let prendaActual = new Object;
+		try {
+			encontrado = await modificarPrendaParcial(req.params.id, req.body); // Acceso y modificación de BBDD en Controllers
+			prendaActual = await buscarPorId(req.params.id); // Búsqueda nuevo dato en BBDD por Controllers para devolver dato antiguo y actual.
 		} catch (error) {
-			res.status(500).json({ msg: "Error: fallo interno del servidor" });
+			res.status(500).json({ msg: "Error: fallo del servidor" });
 		}
+		encontrado === null && res.status(404).json({ msg: "Error: prenda no encontrada" });
+		encontrado !== null &&
+			res.json({
+				datoAntiguo: encontrado,
+				datoActual: prendaActual,
+				msg: "prenda actualizada correctamente",
+			});
+	} catch (error) {
+		res.status(500).json({ msg: "Error: fallo interno del servidor" });
+	}
 });
 
 module.exports = router;
