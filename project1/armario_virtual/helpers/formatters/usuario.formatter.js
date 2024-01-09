@@ -187,7 +187,7 @@ async function cargarTiposDeClientes() {
 /* Tipo de usuario */
 async function cargarTiposDeUsuario() {
 	let objetoACargar = new Promise((resolve) => {
-		let tiposDeUsuario = ["cliente", "administrador", "super administrador"];
+		let tiposDeUsuario = ["usuario", "administrador", "super administrador"];
 		resolve(tiposDeUsuario);
 	});
 	return await objetoACargar;

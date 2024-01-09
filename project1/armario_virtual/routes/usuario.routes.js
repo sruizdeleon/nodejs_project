@@ -15,6 +15,8 @@ const {
 const {
 	middlewareValidacionUsuarioCompleto,
 	middlewareValidacionUsuarioParcial,
+	middlewareEstaLoggeado,
+	middlewareEsAdmin
 } = require("../middlewares/usuario.middleware");
 
 /* GET */
@@ -118,6 +120,17 @@ router.post("/login", async (req, res) => {
 	// } catch (error) {
 	// 	res.status(500).json({ msg: "Error: fallo interno del servidor" });
 	// }
+})
+
+/* ZONA CLIENTE PERSONAL */
+router.post("/zona-privada/cliente/:id", middlewareEstaLoggeado, async (req, res) => {
+	const usuarioEncontrado = await buscarPorId(req.params.id)
+	res.json({ msg: "Te damos la bienvenda de nuevo " + usuarioEncontrado.nombre + "." });
+})
+
+/* ZONA ADMINISTRADORES */
+router.post("/zona-privada/admin/", middlewareEsAdmin, async (req, res) => {
+	res.json({ msg: "Te damos la bienvenda al área de administrador."});
 })
 
 module.exports = router;

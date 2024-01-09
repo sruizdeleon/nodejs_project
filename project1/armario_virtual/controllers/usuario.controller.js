@@ -70,16 +70,15 @@ async function modificarUsuarioParcial(id, body) {
 }
 
 
-let secreto = "misecreto@@1243idjeo23ejD3958dhdjdjDJdiei2932j29js9jd9AUSoe";
+
 async function login(emailAComprobar, passwordAComprobar){
-	console.log(emailAComprobar)
 	const usuarioEncontrado = await Usuario.findOne({email: emailAComprobar});
 	if(usuarioEncontrado){
 		if(usuarioEncontrado.password === passwordAComprobar) {
 			const token = await jwt.sign(
 				{ id: usuarioEncontrado._id, name: usuarioEncontrado.email },
-				"misecreto@@1243idjeo23ejD3958dhdjdjDJdiei2932j29js9jd9AUSoe",
-				{expiresIn: "1h"}
+				process.env.JWTSECRET,
+				{ expiresIn: "1h" }
 			);
 			return {
 				usuario: usuarioEncontrado,

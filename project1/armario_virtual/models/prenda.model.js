@@ -34,7 +34,12 @@ const prendaSchema = new Schema({
     marca: {
         type: String,
         required: false
-    }
+    },
+    // armario: {
+	// 	type: mongoose.Types.ObjectId,
+	// 	ref: "usuarios",
+	// 	required: true,
+    // }
 })
 
 const Prendas = mongoose.model("prendas", prendaSchema)
