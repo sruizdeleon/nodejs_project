@@ -1,4 +1,6 @@
 const Usuario = require("../models/usuario.model");
+const jwt = require("jsonwebtoken")
+require("dotenv").config()
 
 async function buscarTodos() {
 	const usuarios = await Usuario.find();
@@ -67,6 +69,39 @@ async function modificarUsuarioParcial(id, body) {
 	return usuarioSinModificar;
 }
 
+
+let secreto = "misecreto@@1243idjeo23ejD3958dhdjdjDJdiei2932j29js9jd9AUSoe";
+async function login(emailAComprobar, passwordAComprobar){
+	console.log(emailAComprobar)
+	const usuarioEncontrado = await Usuario.findOne({email: emailAComprobar});
+	if(usuarioEncontrado){
+		if(usuarioEncontrado.password === passwordAComprobar) {
+			const token = await jwt.sign(
+				{ id: usuarioEncontrado._id, name: usuarioEncontrado.email },
+				"misecreto@@1243idjeo23ejD3958dhdjdjDJdiei2932j29js9jd9AUSoe",
+				{expiresIn: "1h"}
+			);
+			return {
+				usuario: usuarioEncontrado,
+				token: token,
+				msg: null,
+			}
+		} else {
+			return {
+				usuario: null,
+				token: null,
+				msg: "Error: contraseña incorrecta"
+			}
+		}
+	} else {
+		return {
+			usuario: null,
+			token,
+			msg: "Error: email no encontrado"
+		};
+	}
+}
+
 module.exports = {
 	buscarTodos,
 	buscarPorId,
@@ -74,4 +109,5 @@ module.exports = {
 	eliminarUsuario,
 	modificarUsuario,
 	modificarUsuarioParcial,
+	login,
 };

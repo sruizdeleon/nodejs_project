@@ -1,4 +1,5 @@
 /* Instanciamos las librerias que necesitamos */
+const env = require('dotenv').config()
 const express = require('express');
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
@@ -11,9 +12,14 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: false}));
 app.use(bodyParser.json());
 
+/* Secreto */
+// El app.set sirve para acceder en toda la aplicación a secretKey sin tener que acceder a su valor.
+app.set("secretKey", "misecreto@@1243idjeo23ejD3958dhdjdjDJdiei2932j29js9jd9AUSoe");
+
 /* Conectando con la base de datos */
-mongoose.connect('mongodb+srv://sergioruiz:bqpx3BixVQnuBIeM@cluster0.zc2dgky.mongodb.net/armario_virtual')
-    .then(() => console.log('Connected'))
+mongoose
+	.connect("mongodb+srv://sergioruiz:bqpx3BixVQnuBIeM@cluster0.zc2dgky.mongodb.net/armario_virtual")
+	.then(() => console.log("Connected"));
 
 /* Se puede borrar, es solo para ver por consola que el servidor está corriendo */
 console.log('APP iniciada')
@@ -25,6 +31,7 @@ app.use('/prendas',require('./routes/prenda.routes'))
 
 app.use('/usuarios',require('./routes/usuario.routes'))
 
+app.use('/armarios',require('./routes/armario.routes'))
 
 /* Por último arrancamos el servidor */
-app.listen(3000)
+app.listen(3000);

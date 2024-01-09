@@ -9,6 +9,7 @@ const {
 	eliminarUsuario,
 	modificarUsuario,
 	modificarUsuarioParcial,
+	login,
 } = require("../controllers/usuario.controller");
 
 const {
@@ -107,5 +108,16 @@ router.patch("/:id", middlewareValidacionUsuarioParcial, async (req, res) => {
 		res.status(500).json({ msg: "Error: fallo interno del servidor" });
 	}
 });
+
+/* LOGIN */
+
+router.post("/login", async (req, res) => {
+	// try {
+		const resultado = await login(req.body.email, req.body.password)
+		res.json({token: resultado.token, msg: resultado.msg})
+	// } catch (error) {
+	// 	res.status(500).json({ msg: "Error: fallo interno del servidor" });
+	// }
+})
 
 module.exports = router;
