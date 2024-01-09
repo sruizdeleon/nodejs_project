@@ -3,10 +3,6 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const prendaSchema = new Schema({
-    marca: {
-        type: String,
-        required: false
-    },
     categoria: {
         type: String,
         required: true
@@ -15,13 +11,29 @@ const prendaSchema = new Schema({
         type: String,
         required: true
     },
-    talla: {
+    ocasion: {
         type: String,
-        required: false
+        required: true
+    },
+    estacion: {
+        type: String,
+        required: true
     },
     color: {
         type: String,
         required: true
+    },
+    colorimetria: {
+        type: String,
+        required: true
+    },
+    talla: {
+        type: String,
+        required: false
+    },
+    marca: {
+        type: String,
+        required: false
     }
 })
 
