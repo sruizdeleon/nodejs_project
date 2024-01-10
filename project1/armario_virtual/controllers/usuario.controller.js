@@ -2,6 +2,9 @@ const Usuario = require("../models/usuario.model");
 const jwt = require("jsonwebtoken")
 require("dotenv").config()
 
+const {encriptar, comprobar} = require("../helpers/encrypt/encrypt");
+const { hash } = require("bcryptjs");
+
 async function buscarTodos() {
 	const usuarios = await Usuario.find();
 	return usuarios;
@@ -12,7 +15,20 @@ async function buscarPorId(id) {
 	return usuarioEncontrado;
 }
 
+async function buscarUnEmail(emailAComprobar) {
+	const usuarioEncontrado = await Usuario.findOne({ email: emailAComprobar });
+	return usuarioEncontrado;
+}
+
+async function buscarUnMovil(movilAComprobar) {
+	const usuarioEncontrado = await Usuario.findOne({ email: movilAComprobar });
+	return usuarioEncontrado;
+}
+
 async function crearUsuario(body) {
+	/* Encriptado de contraseña */
+	const hash = await encriptar(body.password);
+
 	/* Creación del documento Usuario */
 	const nuevoUsuario = new Usuario({
 		nombre: body.nombre,
@@ -23,7 +39,7 @@ async function crearUsuario(body) {
 		genero: body.genero,
 		tipoDeCliente: body.tipoDeCliente,
 		tipoDeUsuario: body.tipoDeUsuario,
-		password: body.password
+		password: hash
 	});
 	/* Guardado del documento Usuario */
 	await nuevoUsuario.save();
@@ -72,10 +88,14 @@ async function modificarUsuarioParcial(id, body) {
 
 
 async function login(emailAComprobar, passwordAComprobar){
+	console.log(passwordAComprobar)
 	const usuarioEncontrado = await Usuario.findOne({email: emailAComprobar});
+	console.log(usuarioEncontrado.password)
 	if(usuarioEncontrado){
-		if(usuarioEncontrado.password === passwordAComprobar) {
-			const token = await jwt.sign(
+		const resultadoComprobacion = await comprobar(usuarioEncontrado.password, passwordAComprobar);
+		console.log(resultadoComprobacion)
+		if (resultadoComprobacion) {
+			const token = jwt.sign(
 				{ id: usuarioEncontrado._id, name: usuarioEncontrado.email },
 				process.env.JWTSECRET,
 				{ expiresIn: "1h" }
@@ -84,13 +104,13 @@ async function login(emailAComprobar, passwordAComprobar){
 				usuario: usuarioEncontrado,
 				token: token,
 				msg: null,
-			}
+			};
 		} else {
 			return {
 				usuario: null,
 				token: null,
-				msg: "Error: contraseña incorrecta"
-			}
+				msg: "Error: contraseña incorrecta",
+			};
 		}
 	} else {
 		return {
@@ -109,4 +129,6 @@ module.exports = {
 	modificarUsuario,
 	modificarUsuarioParcial,
 	login,
+	buscarUnEmail,
+	buscarUnMovil
 };

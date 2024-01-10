@@ -1,6 +1,6 @@
 require("dotenv").config();
 
-const { buscarPorId } = require("../controllers/usuario.controller")
+const { buscarPorId, buscarUnEmail, buscarUnMovil } = require("../controllers/usuario.controller")
 
 const {
 	validarAtributosUsuarioCompleto,
@@ -73,9 +73,29 @@ async function middlewareEsAdmin(req, res, next) {
 	}
 }
 
+async function middlewareEsMailDuplicado (req, res, next) {
+	const usuarioConMismoMail = await buscarUnEmail(req.body.email)
+	if(usuarioConMismoMail) {
+		res.statu(400).json({msg: "Error: ya existe un usuario con ese email"})
+	} else {
+		next()
+	}
+}
+
+async function middlewareEsMovilDuplicado (req, res, next) {
+	const usuarioConMismoMovil = await buscarUnMovil(req.body.movil);
+	if (usuarioConMismoMovil) {
+		res.statu(400).json({ msg: "Error: ya existe un usuario con ese movil" });
+	} else {
+		next();
+	}
+}
+
 module.exports = {
 	middlewareValidacionUsuarioCompleto,
 	middlewareValidacionUsuarioParcial,
 	middlewareEstaLoggeado,
-	middlewareEsAdmin
+	middlewareEsAdmin,
+	middlewareEsMailDuplicado,
+	middlewareEsMovilDuplicado
 };

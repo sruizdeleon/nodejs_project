@@ -22,10 +22,12 @@ const usuarioSchema = new Schema({
 	email: {
 		type: String,
 		required: true,
+		unique: true,
 	},
 	movil: {
 		type: String,
 		required: true,
+		unique: true,
 	},
 	password: {
 		type: String,

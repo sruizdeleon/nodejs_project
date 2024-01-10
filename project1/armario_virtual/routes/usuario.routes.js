@@ -9,15 +9,18 @@ const {
 	eliminarUsuario,
 	modificarUsuario,
 	modificarUsuarioParcial,
-	login,
+	login
 } = require("../controllers/usuario.controller");
 
 const {
 	middlewareValidacionUsuarioCompleto,
 	middlewareValidacionUsuarioParcial,
 	middlewareEstaLoggeado,
-	middlewareEsAdmin
+	middlewareEsAdmin,
+	middlewareEsMailDuplicado,
+	middlewareEsMovilDuplicado
 } = require("../middlewares/usuario.middleware");
+
 
 /* GET */
 router.get("/", async (req, res) => {
@@ -49,7 +52,7 @@ router.get("/:id", async (req, res) => {
 });
 
 /* POST */
-router.post("/", middlewareValidacionUsuarioCompleto, async (req, res) => {
+router.post("/", middlewareValidacionUsuarioCompleto, middlewareEsMailDuplicado, middlewareEsMailDuplicado, async (req, res) => {
 	try {
 		let nuevoUsuario = await crearUsuario(req.body); // Acceso y creación en BBDD por Controllers
 		res.json({ dato: nuevoUsuario, msg: `Se ha creado el usuario correctamente` });
