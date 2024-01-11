@@ -8,6 +8,8 @@ const {
 	formatoColor,
 	formatoColorimetria,
 	formatoEstacion,
+	formatoArmarioId,
+	formatoUsuarioId
 } = require("../formatters/prenda.formatter");
 
 /* Validadores POST y PUT */
@@ -71,6 +73,22 @@ async function validarAtributosPrendaCompleta(body) {
 				: atributosErroneos.push("colorimetría: formato erróneo")
 			: atributosErroneos.push("colorimetría: en blanco")
 		: atributosErroneos.push("colorimetría: no definido");
+
+	body.armarioId !== undefined
+		? body.armarioId.trim() !== ""
+			? (await formatoArmarioId(body.armarioId.trim())) === true
+				? (body.armarioId = body.armarioId.trim())
+				: atributosErroneos.push("Id de Armario: formato erróneo")
+			: atributosErroneos.push("Id de Armario: en blanco")
+		: atributosErroneos.push("Id de Armario: no definido");
+
+	body.usuarioId !== undefined
+		? body.usuarioId.trim() !== ""
+			? (await formatoUsuarioId(body.usuarioId.trim())) === true
+				? (body.usuarioId = body.usuarioId.trim())
+				: atributosErroneos.push("Id de Usuario: formato erróneo")
+			: atributosErroneos.push("Id de Usuario: en blanco")
+		: atributosErroneos.push("Id de Usuario: no definido");
 
 	if (atributosErroneos.length > 0) {
 		return {
@@ -155,6 +173,30 @@ async function validarAtributosPrendaParcial(body, prendaActual) {
 				? ((body.colorimetria = body.colorimetria.trim()) && (existenAtributos = true))
 				: atributosErroneos.push("colorimetría: formato erróneo")
 			: atributosErroneos.push("colorimetría: en blanco")
+		: false;
+
+	body.colorimetria !== undefined
+		? body.colorimetria.trim() !== ""
+			? (await formatoColorimetria(body.colorimetria.trim())) === true
+				? ((body.colorimetria = body.colorimetria.trim()) && (existenAtributos = true))
+				: atributosErroneos.push("colorimetría: formato erróneo")
+			: atributosErroneos.push("colorimetría: en blanco")
+		: false;
+
+	body.armarioId !== undefined
+		? body.armarioId.trim() !== ""
+			? (await formatoArmarioId(body.armarioId.trim())) === true
+				? (body.armarioId = body.armarioId.trim())
+				: atributosErroneos.push("Id de Armario: formato erróneo")
+			: atributosErroneos.push("Id de Armario: en blanco")
+		: false;
+
+	body.usuarioId !== undefined
+		? body.usuarioId.trim() !== ""
+			? (await formatoUsuarioId(body.usuarioId.trim())) === true
+				? (body.usuarioId = body.usuarioId.trim())
+				: atributosErroneos.push("Id de Usuario: formato erróneo")
+			: atributosErroneos.push("Id de Usuario: en blanco")
 		: false;
 
 	if (existenAtributos === false) {

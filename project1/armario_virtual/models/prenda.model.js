@@ -35,13 +35,18 @@ const prendaSchema = new Schema({
         type: String,
         required: false
     },
-    // armario: {
-	// 	type: mongoose.Types.ObjectId,
-	// 	ref: "usuarios",
-	// 	required: true,
-    // }
+    armarioId: {
+		type: mongoose.Types.ObjectId,
+		ref: "armario",
+		required: true,
+    },
+    usuarioId: {
+		type: mongoose.Types.ObjectId,
+		ref: "usuario",
+		required: true,
+    }
 })
 
-const Prendas = mongoose.model("prendas", prendaSchema)
+const Prenda = mongoose.model("prenda", prendaSchema)
 
-module.exports = Prendas;
+module.exports = Prenda;

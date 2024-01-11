@@ -3,28 +3,32 @@ const jwt = require("jsonwebtoken")
 require("dotenv").config()
 
 const {encriptar, comprobar} = require("../helpers/encrypt/encrypt");
-const { hash } = require("bcryptjs");
 
-async function buscarTodos() {
+/* Buscar todos las prendas */
+async function buscarTodosUsuarios() {
 	const usuarios = await Usuario.find();
 	return usuarios;
 }
 
-async function buscarPorId(id) {
+/* Buscar sólo una prenda */
+async function buscarPorIdUsuario(id) {
 	const usuarioEncontrado = await Usuario.findById(id);
 	return usuarioEncontrado;
 }
 
+/* Buscar un email */
 async function buscarUnEmail(emailAComprobar) {
 	const usuarioEncontrado = await Usuario.findOne({ email: emailAComprobar });
 	return usuarioEncontrado;
 }
 
+/* Buscar un correo */
 async function buscarUnMovil(movilAComprobar) {
 	const usuarioEncontrado = await Usuario.findOne({ email: movilAComprobar });
 	return usuarioEncontrado;
 }
 
+/* Crear una prenda */
 async function crearUsuario(body) {
 	/* Encriptado de contraseña */
 	const hash = await encriptar(body.password);
@@ -47,12 +51,14 @@ async function crearUsuario(body) {
 	return nuevoUsuario;
 }
 
+/* Eliminar un usuario por id */
 async function eliminarUsuario(id) {
 	/* Búsqueda de id, borrado y asignación de documento borrado */
 	const usuarioBorrado = await Usuario.findByIdAndDelete(id);
 	return usuarioBorrado;
 }
 
+/* Modificar todos los atributos de usuario */
 async function modificarUsuario(id, body) {
 	const usuarioSinModificar = Usuario.findByIdAndUpdate(id, {
 		nombre: body.nombre,
@@ -68,6 +74,7 @@ async function modificarUsuario(id, body) {
 	return usuarioSinModificar;
 }
 
+/* Modificar parte los atributos de usuario */
 async function modificarUsuarioParcial(id, body) {
 	let parametrosAModificar = new Object();
 
@@ -86,7 +93,7 @@ async function modificarUsuarioParcial(id, body) {
 }
 
 
-
+/* Comprobar login de usuario */
 async function login(emailAComprobar, passwordAComprobar){
 	console.log(passwordAComprobar)
 	const usuarioEncontrado = await Usuario.findOne({email: emailAComprobar});
@@ -122,13 +129,13 @@ async function login(emailAComprobar, passwordAComprobar){
 }
 
 module.exports = {
-	buscarTodos,
-	buscarPorId,
+	buscarTodosUsuarios,
+	buscarPorIdUsuario,
 	crearUsuario,
 	eliminarUsuario,
 	modificarUsuario,
 	modificarUsuarioParcial,
 	login,
 	buscarUnEmail,
-	buscarUnMovil
+	buscarUnMovil,
 };

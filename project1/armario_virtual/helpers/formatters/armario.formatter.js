@@ -1,8 +1,24 @@
+/* ARMARIO */
 
+/* Funciones de formato ARMARIO */
 
+async function formatoNombreArmario(nombreArmarioAComprobar) {
+	let regexNombreArmario = await cargarRegexNombreArmario();
+	const formatoValido = regexNombreArmario.test(nombreArmarioAComprobar);
+	return formatoValido;
+}
 
+async function formatoDescripcionArmario(descripcionArmarioAComprobar) {
+	let regexDescripcionArmario = await cargarRegexDescripcionArmario();
+	const formatoValido = regexDescripcionArmario.test(descripcionArmarioAComprobar);
+	return formatoValido;
+}
 
-
+async function formatoUsuario(usuarioAComprobar) {
+	let regexUsuario = await cargarRegexUsuario();
+	const formatoValido = regexUsuario.test(usuarioAComprobar);
+	return formatoValido;
+}
 
 /* ---------------------------------------------------------------------------------------------------------------- */
 
@@ -33,3 +49,17 @@ async function cargarRegexDescripcionArmario() {
 	return await objetoACargar;
 }
 
+/* Descripción del armario */
+async function cargarRegexUsuario() {
+	let objetoACargar = new Promise((resolve) => {
+		const cargarRegexUsuario = /^[0-9a-fA-F]{24}$/;
+		resolve(cargarRegexUsuario);
+	});
+	return await objetoACargar;
+}
+
+module.exports = {
+	formatoNombreArmario,
+	formatoDescripcionArmario,
+	formatoUsuario,
+};

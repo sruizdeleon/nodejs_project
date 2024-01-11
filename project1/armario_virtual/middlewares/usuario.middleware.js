@@ -1,6 +1,6 @@
 require("dotenv").config();
 
-const { buscarPorId, buscarUnEmail, buscarUnMovil } = require("../controllers/usuario.controller")
+const { buscarPorIdUsuario, buscarUnEmail, buscarUnMovil } = require("../controllers/usuario.controller")
 
 const {
 	validarAtributosUsuarioCompleto,
@@ -55,7 +55,7 @@ async function middlewareEsAdmin(req, res, next) {
 		try {
 			const resultado = jwt.verify(req.query.token, process.env.JWTSECRET);
 			console.log(resultado.id);
-			const usuarioEncontrado = await buscarPorId(resultado.id)
+			const usuarioEncontrado = await buscarPorIdUsuario(resultado.id)
 			console.log(usuarioEncontrado.tipoDeUsuario);
 			if (
 				usuarioEncontrado.tipoDeUsuario === "administrador" ||

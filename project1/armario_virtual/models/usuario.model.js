@@ -43,6 +43,6 @@ const usuarioSchema = new Schema({
 	},
 });
 
-const Psuario = mongoose.model("usuario", usuarioSchema)
+const Usuario = mongoose.model("usuario", usuarioSchema)
 
-module.exports = Psuario;
+module.exports = Usuario;

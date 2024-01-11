@@ -13,12 +13,12 @@ const armarioSchema = new Schema({
     },
 	usuario: {
 		type: mongoose.Types.ObjectId,
-		ref: "usuarios",
+		ref: "usuario",
 		required: true,
 	},
 	prendas: [{
 		type: mongoose.Types.ObjectId,
-		ref: "prendas",
+		ref: "prenda",
 		required: false,
 	}],
 });

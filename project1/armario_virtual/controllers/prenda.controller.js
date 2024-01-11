@@ -1,15 +1,18 @@
 const Prenda = require("../models/prenda.model");
 
-async function buscarTodos() {
+/* Buscar todos las prendas */
+async function buscarTodasPrendas() {
 	const prendas = await Prenda.find();
 	return prendas;
 }
 
-async function buscarPorId(id) {
+/* Buscar sólo una prenda */
+async function buscarPorIdPrendas(id) {
 	const prendaEncontrada = await Prenda.findById(id);
 	return prendaEncontrada;
 }
 
+/* Crear una prenda */
 async function crearPrenda(body) {
 	/* Creación del documento Prenda */
 	const nuevaPreda = new Prenda({
@@ -21,7 +24,8 @@ async function crearPrenda(body) {
 		colorimetria: body.colorimetria,
 		talla: body.talla,
 		marca: body.marca,
-		fechaDeCompra: body.fechaDeCompra,
+		armarioId: body.armarioId,
+		usuarioId: body.usuarioId
 	});
 	/* Guardado del documento Prenda */
 	await nuevaPreda.save();
@@ -29,12 +33,14 @@ async function crearPrenda(body) {
 	return nuevaPreda;
 }
 
+/* Eliminar una prenda por id */
 async function eliminarPrenda(id) {
 	/* Búsqueda de id, borrado y asignación de documento borrado */
 	const prendaBorrada = await Prenda.findByIdAndDelete(id);
 	return prendaBorrada;
 }
 
+/* Modificar todos los atributos de prenda se obvian los id de armario y prenda */
 async function modificarPrenda(id, body) {
 	const prendaSinModificar = Prenda.findByIdAndUpdate(id, {
 		categoria: body.categoria,
@@ -45,11 +51,13 @@ async function modificarPrenda(id, body) {
 		colorimetria: body.colorimetria,
 		talla: body.talla,
 		marca: body.marca,
-		fechaDeCompra: body.fechaDeCompra,
+		armarioId: body.armarioId,
+		usuarioId: body.usuarioId
 	});
 	return prendaSinModificar;
 }
 
+/* Modificar sólo algunos atributos de prenda */
 async function modificarPrendaParcial(id, body) {
 	let parametrosAModificar = new Object();
 
@@ -61,14 +69,16 @@ async function modificarPrendaParcial(id, body) {
 	body.estacion !== undefined ? parametrosAModificar["estacion"] = body.estacion : false;
 	body.ocasion !== undefined ? parametrosAModificar["ocasion"] = body.ocasion : false;
 	body.colorimetria !== undefined ? parametrosAModificar["colorimetria"] = body.colorimetria : false;
+	body.armarioId !== undefined ? parametrosAModificar["armarioId"] = body.armarioId : false;
+	body.usuarioId !== undefined ? parametrosAModificar["usuarioId"] = body.usuarioId : false;
 
 	const prendaSinModificar = await Prenda.findByIdAndUpdate(id, parametrosAModificar);
 	return prendaSinModificar;
 }
 
 module.exports = {
-	buscarTodos,
-	buscarPorId,
+	buscarTodasPrendas,
+	buscarPorIdPrendas,
 	crearPrenda,
 	eliminarPrenda,
 	modificarPrenda,

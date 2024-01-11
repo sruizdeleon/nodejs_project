@@ -3,19 +3,23 @@ const express = require("express");
 const router = express.Router();
 
 const {
-	buscarTodos,
-	buscarPorId,
+	buscarTodosArmarios,
+	buscarPorIdArmarios,
 	eliminarArmario,
 	crearArmario,
 	modificarArmarioCompleto,
 	modificarArmarioParcial
 } = require("../controllers/armario.controller");
 
+const {
+	middlewareValidacionPrendaCompleto,
+	middlewareValidacionPrendaParcial,
+} = require("../middlewares/armario.middleware")
 
 /* GET */
 router.get("/", async (req, res) => {
 	// try {
-		let armarios = await buscarTodos(); // Acceso y búsqueda en BBDD por Controllers
+		let armarios = await buscarTodosArmarios(); // Acceso y búsqueda en BBDD por Controllers
 		res.json(armarios);
 	// } catch (error) {
 	// 	res.status(500).json({ msg: "Error: fallo interno del servidor" });
@@ -26,7 +30,7 @@ router.get("/:id", async (req, res) => {
 	// try {
 		let objetoEncontrado = new Object();
 		// try {
-		objetoEncontrado = await buscarPorId(req.params.id); // Acceso y búsqueda en BBDD por Controllers
+		objetoEncontrado = await buscarPorIdArmarios(req.params.id); // Acceso y búsqueda en BBDD por Controllers
 		// } catch (error) {
 		// 	res.status(500).json({ msg: "Error: fallo del servidor" });
 		// }
@@ -42,7 +46,7 @@ router.get("/:id", async (req, res) => {
 
 
 /* POST */
-router.post("/", async (req, res) => {
+router.post("/", middlewareValidacionPrendaCompleto, async (req, res) => {
 	// try {
 		const nuevoArmario = await crearArmario(req.body); // Acceso y creación en BBDD por Controllers
 		res.json({ dato: nuevoArmario, msg: `Se ha creado el armario correctamente` });
@@ -70,13 +74,13 @@ router.delete("/:id", async (req, res) => {
 });
 
 /* PUT */
-router.put("/:id", async (req, res) => {
+router.put("/:id", middlewareValidacionPrendaCompleto, async (req, res) => {
 	// try {
 		let encontrado = new Object();
 		let armarioActual = new Object();
 		// try {
 			encontrado = await modificarArmarioCompleto(req.params.id, req.body); // Acceso y modificación de BBDD en Controllers
-			armarioActual = await buscarPorId(req.params.id); // Búsqueda nuevo dato en BBDD por Controllers para devolver dato antiguo y actual.
+			armarioActual = await buscarPorIdArmarios(req.params.id); // Búsqueda nuevo dato en BBDD por Controllers para devolver dato antiguo y actual.
 		// } catch (error) {
 		// 	res.status(500).json({ msg: "Error: fallo del servidor" });
 		// }
@@ -94,13 +98,13 @@ router.put("/:id", async (req, res) => {
 
 /* PATCH */
 
-router.patch("/:id", async (req, res) => {
+router.patch("/:id", middlewareValidacionPrendaParcial, async (req, res) => {
 	// try {
 		let encontrado = new Object;
 		let armarioActual = new Object;
 		// try {
 			encontrado = await modificarArmarioParcial(req.params.id, req.body); // Acceso y modificación de BBDD en Controllers
-			armarioActual = await buscarPorId(req.params.id); // Búsqueda nuevo dato en BBDD por Controllers para devolver dato antiguo y actual.
+			armarioActual = await buscarPorIdArmarios(req.params.id); // Búsqueda nuevo dato en BBDD por Controllers para devolver dato antiguo y actual.
 		// } catch (error) {
 		// 	res.status(500).json({ msg: "Error: fallo del servidor" });
 		// }

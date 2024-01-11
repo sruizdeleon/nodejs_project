@@ -48,6 +48,7 @@ async function formatoCategoriaPatch(categoriaAComprobar, subcategoriaAComprobar
 	}
 }
 
+/* Comprobación de subcategoria, comprobando primero categoria */
 async function formatoSubcategoria(categoriaAComprobar, subcategoriaAComprobar) {
 	let tiposDeCategoriasYSubcategorias = await cargarTiposDeCategoriasYSubcategorias();
 	let formatoValido = false;
@@ -80,6 +81,7 @@ async function formatoSubcategoria(categoriaAComprobar, subcategoriaAComprobar) 
 	}
 }
 
+/* Comprobación formato de marca */
 async function formatoMarca(marcaAComprobar) {
 	let formatoValido = false;
 	let tiposDeMarcas = await cargarTiposDeMarcas();
@@ -87,6 +89,7 @@ async function formatoMarca(marcaAComprobar) {
 	return formatoValido;
 }
 
+/* Comprobación formato de talla */
 async function formatoTalla(tallaAComprobar) {
 	let formatoValido = false;
 	let tiposDeTallas = await cargarTiposDeTallas();
@@ -94,6 +97,7 @@ async function formatoTalla(tallaAComprobar) {
 	return formatoValido;
 }
 
+/* Comprobación formato de Colorimetria */
 async function formatoColorimetria(colorimetriaAComprobar) {
 	let formatoValido = false;
 	let tiposDeColorimetrias = await cargarTiposDeColorimetrias();
@@ -121,6 +125,19 @@ async function formatoEstacion(estacionesAComprobar) {
 	tiposDeEstaciones.includes(estacionesAComprobar) ? (formatoValido = true) : (formatoValido = false);
 	return formatoValido;
 }
+
+async function formatoArmarioId(armarioIdAComprobar) {
+	let regexArmarioId = await cargarRegexArmarioId();
+	const formatoValido = regexArmarioId.test(armarioIdAComprobar);
+	return formatoValido;
+}
+
+async function formatoUsuarioId(usuarioIdAComprobar) {
+	let regexUsuarioId = await cargarRegexUsuarioId();
+	const formatoValido = regexUsuarioId.test(usuarioIdAComprobar);
+	return formatoValido;
+}
+
 
 /* ----------------------------------------------------------------------------------------- */
 
@@ -504,6 +521,25 @@ async function cargarTiposDeColorimetrias() {
 	return await objetoACargar;
 }
 
+/* armarioId */
+async function cargarRegexArmarioId() {
+	let objetoACargar = new Promise((resolve) => {
+		let regexArmarioId = /^[0-9a-fA-F]{24}$/;
+		resolve(regexArmarioId);
+	});
+	return await objetoACargar;
+}
+
+
+/* usuarioId */
+async function cargarRegexUsuarioId() {
+	let objetoACargar = new Promise((resolve) => {
+		let regexUsuarioId = /^[0-9a-fA-F]{24}$/;
+		resolve(regexUsuarioId);
+	});
+	return await objetoACargar;
+}
+
 module.exports = {
 	formatoCategoria,
 	formatoCategoriaPatch,
@@ -513,5 +549,7 @@ module.exports = {
 	formatoMarca,
 	formatoColor,
 	formatoColorimetria,
-	formatoEstacion
+	formatoEstacion,
+	formatoArmarioId,
+	formatoUsuarioId
 };
